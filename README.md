@@ -1,4 +1,4 @@
-# Project Stone
+# Game Framework
 A simple game engine written in C++, inspired by [Son of Spades](https://sonofspades.com/).
 
 ## ✨ Features
@@ -31,6 +31,7 @@ git clone --recursive https://github.com/nhat05thud/game-framework.git
       -DCMAKE_CXX_STANDARD:STRING=23
       ```
     - Build directory: ```cmake/debug```
+    - Cache variables: ```DGLFW_BUILD_EXAMPLES → ON``` ```DGLFW_BUILD_TESTS → ON```
 
 #### ⏺ Visual Studio Settings:
 
@@ -58,6 +59,14 @@ git clone --recursive https://github.com/nhat05thud/game-framework.git
         {
           "name": "CMAKE_RUNTIME_OUTPUT_DIRECTORY",
           "value": "${projectDir}\\build"
+        },
+        {
+          "name": "GLFW_BUILD_EXAMPLES",
+          "value": "ON"
+        },
+        {
+          "name": "GLFW_BUILD_TESTS",
+          "value": "ON"
         }
       ]
     }
