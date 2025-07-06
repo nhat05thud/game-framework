@@ -4,6 +4,9 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include <opengl/commands.hpp>
+
 #include <vector>
 
 auto main() -> int
@@ -59,13 +62,13 @@ auto main() -> int
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(0);
 
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	opengl::Commands::clear(0.5f, 0.5f, 0.5f, 1.0f);
 
 	while (!window_closed)
 	{
 		glfwPollEvents();
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		opengl::Commands::clear(GL_COLOR_BUFFER_BIT);
 
 		glBindVertexArray(vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
