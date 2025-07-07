@@ -9,6 +9,23 @@
 
 #include <vector>
 
+auto vertex_stage_source =
+"#version 450\n"
+"layout (location = 0) in vec3 in_position;\n"
+"\n"
+"void main()\n"
+"{\n"
+"	gl_Position = vec4(in_position, 1.0);\n"
+"}\n";
+auto fragment_stage_source =
+"#version 450\n"
+"layout (location = 0) out vec4 out_color;\n"
+"\n"
+"void main()\n"
+"{\n"
+"	out_color = vec4(1.0, 0.502, 0.251, 1.0);\n"
+"}\n";
+
 auto main() -> int
 {
 	if (glfwInit() != GLFW_TRUE)
@@ -76,6 +93,19 @@ auto main() -> int
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
 	glEnableVertexAttribArray(0);
 
+	const auto vert_stage = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vert_stage, 1, &vertex_stage_source, nullptr);
+	glCompileShader(vert_stage);
+
+	const auto frag_stage = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(frag_stage, 1, &fragment_stage_source, nullptr);
+	glCompileShader(frag_stage);
+
+	const auto shader = glCreateProgram();
+	glAttachShader(shader, vert_stage);
+	glAttachShader(shader, frag_stage);
+	glLinkProgram(shader);
+
 	opengl::Commands::clear(0.5f, 0.5f, 0.5f, 1.0f);
 
 	while (!window_closed)
@@ -83,6 +113,8 @@ auto main() -> int
 		glfwPollEvents();
 
 		opengl::Commands::clear(GL_COLOR_BUFFER_BIT);
+
+		glUseProgram(shader);
 
 		glBindVertexArray(vao);
 		// not apply element buffer
