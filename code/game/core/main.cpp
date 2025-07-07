@@ -32,6 +32,9 @@ auto main() -> int
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			window_closed = true;
 		}
+		if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
 	});
 
 	glfwSetWindowCloseCallback(window, []
@@ -43,23 +46,34 @@ auto main() -> int
 
 	gladLoadGL();
 
-	const std::vector verticles
+	const std::vector vertices
 	{
 		-0.5f, -0.5f, 0.0f,
 		 0.5f, -0.5f, 0.0f,
-		 0.0f,  0.5f, 0.0f
+		-0.5f,  0.5f, 0.0f,
+		 0.5f,  0.5f, 0.0f,
 	};
 
-	uint32_t vao, vbo;
+	const std::vector<unsigned int> elements
+	{
+		0, 1, 2,
+		1, 2, 3,
+	};
+
+	uint32_t vao, vbo, ebo;
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, verticles.size() * sizeof(float), verticles.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(unsigned int), elements.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
 	glEnableVertexAttribArray(0);
 
 	opengl::Commands::clear(0.5f, 0.5f, 0.5f, 1.0f);
@@ -71,7 +85,13 @@ auto main() -> int
 		opengl::Commands::clear(GL_COLOR_BUFFER_BIT);
 
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// not apply element buffer
+		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		// opengl::Commands::draw_vertices(GL_TRIANGLES, vertices.size());
+
+		// apply element buffer
+		// glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, nullptr);
+		opengl::Commands::draw_elements(GL_TRIANGLES, elements.size());
 
 		glfwSwapBuffers(window);
 	}

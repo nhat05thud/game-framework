@@ -17,4 +17,14 @@ namespace opengl
 	{
 		glClear(flags);
 	}
+
+	auto Commands::draw_vertices(const unsigned int primitive, const int count, const int offset) -> void
+	{
+		glDrawArrays(primitive, offset, count);
+	}
+
+	auto Commands::draw_elements(const unsigned int primitive, const int count, int offset) -> void
+	{
+		glDrawElements(primitive, count, GL_UNSIGNED_INT, nullptr);
+	}
 }
