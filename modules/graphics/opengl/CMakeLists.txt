@@ -1,4 +1,5 @@
 #=======================================================================================================================
-target_link_libraries(${PROJECT_NAME} PRIVATE glad)
-target_sources(${PROJECT_NAME} PRIVATE commands.cpp)
+target_precompile_headers(${PROJECT_NAME} PUBLIC private.hpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE glad)
+           target_sources(${PROJECT_NAME} PRIVATE functions.cpp commands.cpp)
 #=======================================================================================================================

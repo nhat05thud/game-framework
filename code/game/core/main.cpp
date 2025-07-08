@@ -2,12 +2,14 @@
 // Created by nguye on 7/6/2025.
 //
 
+#include <opengl/commands.hpp>
+#include <opengl/functions.hpp>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <opengl/commands.hpp>
-
 #include <vector>
+#include "opengl/constants/commands.hpp"
 
 auto vertex_stage_source =
 "#version 450\n"
@@ -63,6 +65,8 @@ auto main() -> int
 
 	gladLoadGL();
 
+	opengl::Functions::init();
+
 	const std::vector vertices
 	{
 		-0.5f, -0.5f, 0.0f,
@@ -112,18 +116,13 @@ auto main() -> int
 	{
 		glfwPollEvents();
 
-		opengl::Commands::clear(GL_COLOR_BUFFER_BIT);
+		opengl::Commands::clear(opengl::constants::color_buffer);
 
 		glUseProgram(shader);
 
 		glBindVertexArray(vao);
-		// not apply element buffer
-		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-		// opengl::Commands::draw_vertices(GL_TRIANGLES, vertices.size());
 
-		// apply element buffer
-		// glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, nullptr);
-		opengl::Commands::draw_elements(GL_TRIANGLES, elements.size());
+		opengl::Commands::draw_elements(opengl::constants::triangles, elements.size());
 
 		glfwSwapBuffers(window);
 	}

@@ -4,6 +4,8 @@
 
 #include "commands.hpp"
 
+#include "functions/commands.hpp"
+
 #include <glad/glad.h>
 
 namespace opengl
@@ -15,7 +17,7 @@ namespace opengl
 
 	auto Commands::clear(const unsigned int flags) -> void
 	{
-		glClear(flags);
+		functions::glClear(flags);
 	}
 
 	auto Commands::draw_vertices(const unsigned int primitive, const int count, const int offset) -> void
