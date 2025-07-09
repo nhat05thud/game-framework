@@ -4,6 +4,7 @@
 
 #include <opengl/commands.hpp>
 #include <opengl/functions.hpp>
+#include <opengl/debug.hpp>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -73,6 +74,7 @@ auto main() -> int
 	gladLoadGL();
 
 	opengl::Functions::init();
+        opengl::Debug::init();
 
 	const std::vector vertices
 	{
