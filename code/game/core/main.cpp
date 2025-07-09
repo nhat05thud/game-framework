@@ -8,24 +8,31 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <vector>
 #include "opengl/constants/commands.hpp"
 
 auto vertex_stage_source =
 "#version 450\n"
 "layout (location = 0) in vec3 in_position;\n"
-"\n"
+"layout (location = 0) uniform mat4 u_model;\n"
+"layout (location = 1) uniform mat4 u_view;\n"
+"layout (location = 2) uniform mat4 u_proj;\n"
 "void main()\n"
 "{\n"
-"	gl_Position = vec4(in_position, 1.0);\n"
+"	gl_Position = u_proj * u_view * u_model * vec4(in_position, 1.0);\n"
 "}\n";
 auto fragment_stage_source =
 "#version 450\n"
 "layout (location = 0) out vec4 out_color;\n"
+"layout (location = 0) uniform vec3 u_color;\n"
 "\n"
 "void main()\n"
 "{\n"
-"	out_color = vec4(1.0, 0.502, 0.251, 1.0);\n"
+"	out_color = vec4(u_color, 1.0);\n"
 "}\n";
 
 auto main() -> int
@@ -112,6 +119,9 @@ auto main() -> int
 
 	opengl::Commands::clear(0.5f, 0.5f, 0.5f, 1.0f);
 
+	auto view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+	auto proj = glm::perspective(glm::radians(45.0f), static_cast<float>(window_width) / static_cast<float>(window_height), 0.1f, 1000.0f);
+
 	while (!window_closed)
 	{
 		glfwPollEvents();
@@ -119,6 +129,15 @@ auto main() -> int
 		opengl::Commands::clear(opengl::constants::color_buffer);
 
 		glUseProgram(shader);
+
+		glUniform3f(0, 1.0, 0.502, 0.251);
+
+		auto model = glm::mat4(1.0f);
+			 model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(proj));
 
 		glBindVertexArray(vao);
 

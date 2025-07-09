@@ -4,3 +4,4 @@ cmake
 *.idea
 *.exe
 *.pdb
+.vs

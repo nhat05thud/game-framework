@@ -1,4 +1,4 @@
 #=======================================================================================================================
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad graphics-module)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad glm graphics-module)
 target_sources(${PROJECT_NAME} PRIVATE main.cpp)
 #=======================================================================================================================
