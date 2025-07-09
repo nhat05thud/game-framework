@@ -92,9 +92,6 @@ auto main() -> int
 
 	uint32_t vao, vbo, ebo;
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
@@ -103,8 +100,14 @@ auto main() -> int
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(unsigned int), elements.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
-	glEnableVertexAttribArray(0);
+	glCreateVertexArrays(1, &vao);
+
+	glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(float) * 3);
+	glVertexArrayElementBuffer(vao, ebo);
+
+	glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayAttribBinding(vao, 0, 0);
+	glEnableVertexArrayAttrib(vao, 0);
 
 	const auto vert_stage = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_stage, 1, &vertex_stage_source, nullptr);
@@ -141,7 +144,8 @@ auto main() -> int
 		glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(proj));
 
-		glBindVertexArray(vao);
+		vao.bind();
+		/*glBindVertexArray(vao);*/
 
 		opengl::Commands::draw_elements(opengl::constants::triangles, elements.size());
 
