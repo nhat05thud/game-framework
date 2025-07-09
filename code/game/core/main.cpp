@@ -5,6 +5,7 @@
 #include <opengl/commands.hpp>
 #include <opengl/functions.hpp>
 #include <opengl/debug.hpp>
+#include <opengl/vertex_array.hpp>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -90,7 +91,10 @@ auto main() -> int
 		1, 2, 3,
 	};
 
-	uint32_t vao, vbo, ebo;
+	uint32_t vbo, ebo;
+	// vao: vertex array object
+	// vbo: vertex buffer object
+	// ebo: element buffer object
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -100,14 +104,19 @@ auto main() -> int
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(unsigned int), elements.data(), GL_STATIC_DRAW);
 
-	glCreateVertexArrays(1, &vao);
+	opengl::VertexArray vao;
+	vao.create();
+	/*glCreateVertexArrays(1, &vao);*/
 
-	glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(float) * 3);
-	glVertexArrayElementBuffer(vao, ebo);
+	vao.attach_vertices(vbo, sizeof(float) * 3);
+	vao.attach_elements(ebo);
+	/*glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(float) * 3);
+	glVertexArrayElementBuffer(vao, ebo);*/
 
-	glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	vao.attribute(0, 3, GL_FLOAT, GL_FALSE, 0);
+	/*glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
 	glVertexArrayAttribBinding(vao, 0, 0);
-	glEnableVertexArrayAttrib(vao, 0);
+	glEnableVertexArrayAttrib(vao, 0);*/
 
 	const auto vert_stage = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_stage, 1, &vertex_stage_source, nullptr);
