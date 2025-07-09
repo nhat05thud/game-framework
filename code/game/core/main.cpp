@@ -96,27 +96,19 @@ auto main() -> int
 	// vbo: vertex buffer object
 	// ebo: element buffer object
 
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+	glCreateBuffers(1, &vbo);
+	glNamedBufferStorage(vbo, vertices.size() * sizeof(float), vertices.data(), 0);
 
-	glGenBuffers(1, &ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(unsigned int), elements.data(), GL_STATIC_DRAW);
+	glCreateBuffers(1, &ebo);
+	glNamedBufferStorage(ebo, elements.size() * sizeof(unsigned int), elements.data(), 0);
 
 	opengl::VertexArray vao;
 	vao.create();
-	/*glCreateVertexArrays(1, &vao);*/
 
 	vao.attach_vertices(vbo, sizeof(float) * 3);
 	vao.attach_elements(ebo);
-	/*glVertexArrayVertexBuffer(vao, 0, vbo, 0, sizeof(float) * 3);
-	glVertexArrayElementBuffer(vao, ebo);*/
 
 	vao.attribute(0, 3, GL_FLOAT, GL_FALSE, 0);
-	/*glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-	glVertexArrayAttribBinding(vao, 0, 0);
-	glEnableVertexArrayAttrib(vao, 0);*/
 
 	const auto vert_stage = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_stage, 1, &vertex_stage_source, nullptr);
@@ -144,18 +136,25 @@ auto main() -> int
 
 		glUseProgram(shader);
 
-		glUniform3f(0, 1.0, 0.502, 0.251);
-
-		auto model = glm::mat4(1.0f);
-			 model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
-
-		glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(proj));
 
 		vao.bind();
-		/*glBindVertexArray(vao);*/
 
+		glUniform3f(3, 1.0, 0.502, 0.251);
+
+		auto model = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			 model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
+		opengl::Commands::draw_elements(opengl::constants::triangles, elements.size());
+		
+		glUniform3f(3, 0.0f, 1.0f, 0.0f);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(model));
 		opengl::Commands::draw_elements(opengl::constants::triangles, elements.size());
 
 		glfwSwapBuffers(window);
